@@ -17,9 +17,7 @@ public class RedisUtils {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public RedisUtils(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
+    public RedisUtils() {}
 
     /**
      * 指定缓存失效时间
