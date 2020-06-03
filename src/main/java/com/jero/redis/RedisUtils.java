@@ -75,6 +75,17 @@ public class RedisUtils {
         }
     }
 
+    /**
+     * 删除缓存
+     * @param keyList key集合
+     */
+    @SuppressWarnings("unchecked")
+    public void batchDel(List<String> keyList){
+        if(keyList != null && !keyList.isEmpty()){
+            redisTemplate.delete(keyList);
+        }
+    }
+
     //============================String=============================
     /**
      * 普通缓存获取
@@ -119,6 +130,49 @@ public class RedisUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * 普通缓存批量放入
+     * @param map 键 值
+     * @return true成功 false失败
+     */
+    public boolean batchSet(Map<String, String> map) {
+        try {
+            redisTemplate.opsForValue().multiSet(map);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 批量添加 key-value 只有在键不存在时,才添加
+     * map 中只要有一个key存在,则全部不添加
+     *
+     * @param map
+     */
+    public boolean batchSetIfAbsent(Map<String, String> map) {
+        try {
+            redisTemplate.opsForValue().multiSetIfAbsent(map);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 普通缓存批量获取
+     * @param keyList 键 值
+     */
+    public List<Object> batchGet(List<String> keyList) {
+        if(keyList != null && !keyList.isEmpty()){
+            return redisTemplate.opsForValue().multiGet(keyList);
+        } else {
+            return null;
         }
     }
 
@@ -281,6 +335,16 @@ public class RedisUtils {
      */
     public double hdecr(String key, String item,double by){
         return redisTemplate.opsForHash().increment(key, item,-by);
+    }
+
+    /**
+     * 返回这个key里面所有hashKeys的值
+     * @param key
+     * @param hasKeyList
+     * @return
+     */
+    public List<Object> batchGet(String key, List<Object> hasKeyList) {
+        return redisTemplate.opsForHash().multiGet(key, hasKeyList);
     }
 
     //============================set=============================
